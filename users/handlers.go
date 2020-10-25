@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jackc/pgconn"
@@ -152,7 +153,7 @@ func login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		user.Email,
 		// u.Role,
 		jwt.StandardClaims{
-			// ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
 		},
 	}
 
@@ -161,7 +162,6 @@ func login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	t, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	if err != nil {
 		helpers.SendError(w, http.StatusInternalServerError, "Server Error!!", err)
-
 	}
 
 	helpers.SendSuccessResponse(w, http.StatusOK, helpers.JSONResponse{"message": "logged in successfully", "token": t})
